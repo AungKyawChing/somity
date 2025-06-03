@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>সদস্য যোগ করুন</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f8f9fa; }
+    .navbar { margin-bottom: 20px; }
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="#">ম্যানেজমেন্ট</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active"><a class="nav-link active" href="add-member.html">সদস্য যোগ</a></li>
+          <li class="nav-item"><a class="nav-link" href="add-transaction.html">লেনদেন যোগ</a></li>
+          <li class="nav-item"><a class="nav-link" href="payment.html">অর্থ প্রদান</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2 class="text-center my-4">সদস্য যোগ করুন</h2>
+    <form id="addMemberForm">
+      <div class="mb-3">
+        <label for="memberNumber" class="form-label">সদস্য নং</label>
+        <input type="text" name="memberNumber" id="memberNumber" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="memberName" class="form-label">সদস্যের নাম</label>
+        <input type="text" name="memberName" id="memberName" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="fatherOrHusbandName" class="form-label">পিতা/স্বামীর নাম</label>
+        <input type="text" name="fatherOrHusbandName" id="fatherOrHusbandName" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label for="phoneNumber" class="form-label">ফোন নম্বর</label>
+        <input type="text" name="phoneNumber" id="phoneNumber" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">ইমেইল</label>
+        <input type="email" name="email" id="email" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label for="address" class="form-label">ঠিকানা</label>
+        <input type="text" name="address" id="address" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label for="nationalId" class="form-label">জাতীয় পরিচয়পত্র</label>
+        <input type="text" name="nationalId" id="nationalId" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label for="birthRegistration" class="form-label">জন্ম নিবন্ধন</label>
+        <input type="text" name="birthRegistration" id="birthRegistration" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label for="joinDateTime" class="form-label">যোগদানের তারিখ ও সময়</label>
+        <input type="datetime-local" name="joinDateTime" id="joinDateTime" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="status" class="form-label">স্ট্যাটাস</label>
+        <select name="status" id="status" class="form-select" required>
+          <option value="Active">সক্রিয়</option>
+          <option value="Inactive">নিষ্ক্রিয়</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="admissionFee" class="form-label">ভর্তি ফি</label>
+        <input type="number" name="admissionFee" id="admissionFee" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="payerName" class="form-label">প্রদানকারীর নাম (সদস্য)</label>
+        <input type="text" name="payerName" id="payerName" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="collectorName" class="form-label">আদায়কারীর নাম (কর্মচারী)</label>
+        <input type="text" name="collectorName" id="collectorName" class="form-control" list="collectorSuggestions" required>
+        <datalist id="collectorSuggestions"></datalist>
+      </div>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#secretCodeModal">জমা দিন</button>
+    </form>
+  </div>
+
+  <!-- Secret Code Modal -->
+  <div class="modal fade" id="secretCodeModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">গোপন কোড দিন</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="password" id="secretCode" class="form-control" placeholder="গোপন কোড">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+          <button type="button" class="btn btn-primary" id="confirmButton">কনফার্ম</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container">
+    <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-body"></div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxB-RjVLbIC-qSfw0u5X-sxgLgrXBkUEqSvFTvWR-O23GwwHIwtuRq-u75-4amKianQ4A/exec';
+    let isSubmitting = false;
+
+    $(document).ready(function() {
+      fetchNextMemberNumber();
+      fetchCollectorSuggestions();
+      $('#addMemberForm [name="joinDateTime"]').val(getCurrentDateTime());
+      $('#addMemberForm [name="memberName"]').on('input', function() {
+        $('#addMemberForm [name="payerName"]').val($(this).val());
+      });
+    });
+
+    async function fetchNextMemberNumber() {
+      const response = await fetch(`${SCRIPT_URL}?action=getNextMemberNumber`);
+      const result = await response.json();
+      if (result.status === 'success') {
+        $('#addMemberForm [name="memberNumber"]').val(result.data);
+      }
+    }
+
+    async function fetchCollectorSuggestions() {
+      const response = await fetch(`${SCRIPT_URL}?action=getSuggestions&type=payer`);
+      const result = await response.json();
+      if (result.status === 'success') {
+        const datalist = $('#collectorSuggestions');
+        datalist.empty();
+        result.suggestions.forEach(name => {
+          datalist.append(`<option value="${name}">${name}</option>`);
+        });
+      }
+    }
+
+    function getCurrentDateTime() {
+      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' }));
+      return now.toISOString().slice(0, 16);
+    }
+
+    function showToast(message, bgClass = 'bg-primary') {
+      const toast = $('#toast');
+      toast.removeClass('bg-primary bg-success bg-danger').addClass(bgClass);
+      toast.find('.toast-body').text(message);
+      const bsToast = new bootstrap.Toast(toast[0]);
+      bsToast.show();
+    }
+
+    $('#confirmButton').click(async function() {
+      if (isSubmitting) return;
+      isSubmitting = true;
+      $('#confirmButton').prop('disabled', true);
+      showToast('Transaction Processing', 'bg-primary');
+
+      const secretCode = $('#secretCode').val();
+      const form = $('#addMemberForm');
+      const formData = Object.fromEntries(new FormData(form[0]));
+      formData.secretCode = secretCode;
+      formData.action = 'addMember';
+
+      try {
+        const response = await $.ajax({
+          url: SCRIPT_URL,
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(formData)
+        });
+        showToast(response.message, response.status === 'success' ? 'bg-success' : 'bg-danger');
+        if (response.status === 'success') {
+          form[0].reset();
+          fetchNextMemberNumber();
+          $('#secretCodeModal').modal('hide');
+        }
+      } catch (error) {
+        console.error(error);
+        showToast('Transaction Failed', 'bg-danger');
+      } finally {
+        isSubmitting = false;
+        $('#confirmButton').prop('disabled', false);
+    }
+  });
+</script>
+</body>
+</html>

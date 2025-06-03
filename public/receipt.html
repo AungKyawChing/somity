@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Receipt</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #f8f9fa; }
+    .navbar { margin-bottom: 20px; }
+    .transaction-table { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Cooperative</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="index.html">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="members.html">Members</a></li>
+          <li class="nav-item"><a class="nav-link" href="ledger.html">Ledger</a></li>
+          <li class="nav-item"><a class="nav-link active" href="receipt.html">Receipt</a></li>
+          <li class="nav-item"><a class="nav-link" href="payable.html">Payable Amount</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="text-center mb-4">Receipt</h1>
+    <div class="mb-3">
+      <input type="text" id="receiptNumber" class="form-control" placeholder="Enter Receipt Number">
+      <button class="btn btn-primary mt-2" onclick="fetchReceipt()">Fetch Receipt</button>
+    </div>
+    <div id="receiptDetails" class="card" style="display: none;">
+      <div class="card-body">
+        <p><strong>Receipt Number:</strong> <span id="receiptNumberDisplay"></span></p>
+        <p><strong>DateTime:</strong> <span id="receiptDateTime"></span></p>
+        <p><strong>Member Number:</strong> <span id="receiptMemberNumber"></span></p>
+        <p><strong>Member Name:</strong> <span id="receiptMemberName"></span></p>
+        <p><strong>Transaction Details:</strong></p>
+        <table class="table table-bordered transaction-table" id="receiptTransactionDetails">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody id="transactionTableBody"></tbody>
+        </table>
+        <p><strong>Payer:</strong> <span id="receiptPayerName"></span></p>
+        <p><strong>Collector:</strong> <span id="receiptCollectorName"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwoxS7ZlminN2IQiN7m4-Zm0J84FmA_EBUqXY1HIrvEDN3BlJorJ5bQN0kThMgWxN-a/exec';
+
+    async function fetchReceipt() {
+      const receiptNumber = $('#receiptNumber').val();
+      if (!receiptNumber) {
+        alert('Please enter a receipt number');
+        return;
+      }
+      try {
+        const response = await fetch(`${SCRIPT_URL}?action=getReceipt&receiptNumber=${receiptNumber}`);
+        const result = await response.json();
+        if (result.status === 'success') {
+          const details = result.data;
+          $('#receiptNumberDisplay').text(details.receiptNumber);
+          $('#receiptDateTime').text(new Date(details.dateTime).toLocaleString());
+          $('#receiptMemberNumber').text(details.memberNumber);
+          $('#receiptMemberName').text(details.memberName);
+          $('#receiptPayerName').text(details.payerName);
+          $('#receiptCollectorName').text(details.collectorName);
+
+          // Clear previous table body
+          const tableBody = $('#transactionTableBody');
+          tableBody.empty();
+
+          // Parse transaction details and populate table
+          let totalAmount = 0;
+          const transactions = details.transactionDetails || [];
+          transactions.forEach(detail => {
+            tableBody.append(`
+              <tr>
+                <td>${detail.type}</td>
+                <td>${parseFloat(detail.amount).toFixed(2)}</td>
+              </tr>
+            `);
+            totalAmount += parseFloat(detail.amount);
+          });
+
+          // Append total row
+          tableBody.append(`
+            <tr>
+              <td><strong>সর্বমোট</strong></td>
+              <td><strong>${totalAmount.toFixed(2)}</strong></td>
+            </tr>
+          `);
+
+          $('#receiptDetails').show();
+        } else {
+          alert(result.message);
+          $('#receiptDetails').hide();
+        }
+      } catch (error) {
+        console.error('Error fetching receipt:', error);
+        alert('Failed to fetch receipt. Please try again.');
+        $('#receiptDetails').hide();
+      }
+    }
+  </script>
+</body>
+</html>

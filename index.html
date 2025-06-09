@@ -37,7 +37,6 @@
             font-size: 14px;
             color: #666;
         }
-        /* No logo in your provided HTML, so removed .logo style */
         .detail-row {
             display: flex;
             justify-content: space-between;
@@ -232,12 +231,8 @@
             const element = document.getElementById('receiptDiv');
             const { jsPDF } = window.jspdf;
 
-            // A4 dimensions in mm: 210 mm (width) x 297 mm (height)
-            const a4Width_mm = 210;
-            const a4Height_mm = 297;
-
-            // Target PDF width: A4 width / 2
-            const targetPdfWidth_mm = a4Width_mm / 2;
+            // Define the target width for the PDF in millimeters
+            const targetPdfWidth_mm = 105; // Set to 105mm as requested
 
             html2canvas(element, { scale: 2 }).then(canvas => { // Scale for better quality
                 const imgData = canvas.toDataURL('image/png');
@@ -246,23 +241,15 @@
 
                 // Calculate the ratio to maintain aspect ratio while fitting to target PDF width
                 const ratio = targetPdfWidth_mm / imgWidth_px;
-                const imgHeight_mm = imgHeight_px * ratio;
+                const imgHeight_mm = imgHeight_px * ratio; // The height will be dynamic based on the div's content
 
-                const pdf = new jsPDF('p', 'mm', [targetPdfWidth_mm, a4Height_mm]); // Define custom page size
-                let position = 0;
-                let heightLeft = imgHeight_mm;
+                // Initialize jsPDF with custom dimensions:
+                // 'p' for portrait, 'mm' for units in millimeters,
+                // and an array [width, height] for custom page size.
+                const pdf = new jsPDF('p', 'mm', [targetPdfWidth_mm, imgHeight_mm]);
 
-                // Add image to PDF
-                pdf.addImage(imgData, 'PNG', 0, position, targetPdfWidth_mm, imgHeight_mm);
-                heightLeft -= a4Height_mm; // Subtract one page height
-
-                // If content is longer than one page, add new pages
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight_mm; // Move up for the next section
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 0, position, targetPdfWidth_mm, imgHeight_mm);
-                    heightLeft -= a4Height_mm;
-                }
+                // Add image to PDF. The image will perfectly fit the dynamically set page size.
+                pdf.addImage(imgData, 'PNG', 0, 0, targetPdfWidth_mm, imgHeight_mm);
 
                 pdf.save('রশিদ.pdf');
             });

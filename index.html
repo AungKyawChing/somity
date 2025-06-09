@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রশিদ</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .invoice-container {
+            width: 600px; /* This width will be scaled down for PDF */
+            margin: 0 auto;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            position: relative;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .header p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        /* No logo in your provided HTML, so removed .logo style */
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .detail-item {
+            flex: 1;
+        }
+        .detail-full-width {
+            margin-bottom: 10px;
+        }
+        .detail-label {
+            font-weight: bold;
+            display: inline-block;
+        }
+        .detail-value {
+            padding: 0 5px;
+            display: inline-block;
+            min-width: 150px;
+        }
+        .detail-full-width .detail-value {
+            width: calc(100% - 100px);
+        }
+
+        .table-container {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+        table th, table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        table th {
+            background-color: #f5f5f5;
+        }
+        .total-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            font-size: 14px;
+        }
+        .signature-section div {
+            text-align: center;
+            width: 45%;
+        }
+        .signature-text {
+            position: relative;
+            margin-top: 30px;
+            padding-top: 5px;
+        }
+        .signature-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            border-top: 1px solid #000;
+        }
+        .signature-name {
+            margin-top: 5px;
+        }
+        .print-button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .print-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .print-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container" id="receiptDiv">
+        <div class="header">
+            <h2>হারবাং জনসেবা কো-অপারেটিভ ক্রেডিট ইউনিয়ন লিঃ</h2>
+            <p>স্থাপিত:০১/০১/২০২০ রেজিঃ নং-কক্স/৩২৩৮, কালব নং - ১৪৬৩,</p>
+            <p>ঠিকানা : নোওয়পাড়া ৩নং ওয়ার্ড, হারবাং, চকরিয়া, কক্সবাজার।</p>
+            <p>Office : 01821-974765, E-mail: jonosheba@gmail.com</p>
+        </div>
+        <div class="detail-row">
+            <div class="detail-item">
+                <label class="detail-label">রশিদ নং:</label><span class="detail-value">4763</span>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">তারিখ:</label><span class="detail-value">15/03/2025</span>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-item">
+                <label class="detail-label">সদস্য নং:</label><span class="detail-value">3</span>
+            </div>
+            <div class="detail-item">
+                <label class="detail-label">সময়:</label><span class="detail-value">10:30:54 AM</span>
+            </div>
+        </div>
+        <div>
+            <label class="detail-label">সদস্যের নাম:</label><span class="detail-value">দিবাকর </span>
+        </div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>বিবরণ</th>
+                        <th>টাকা</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>শেয়ার জমা</td>
+                        <td>50</td>
+                    </tr>
+                    <tr>
+                        <td>সঞ্চয় জমা</td>
+                        <td>50</td>
+                    </tr>
+                    <tr>
+                        <td>ঋণ ফেরৎ</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ঋণের সুদ/সেবা মূল্য</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>শেয়ার জরিমানা</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ঋণের জরিমানা</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>হিসাব খরচ/ভর্তি ফিঃ/ফরম</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>মৌসুমী/বিশেষ ঋণ ফেরৎ</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>মৌসুমী/বিশেষ ঋণ মুনাফা</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>অন্যান্য/মিউচুয়্যাল</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>মোট : </th>
+                        <th>100</th>
+                    </tr>
+                    </tbody>
+            </table>
+        </div>
+        <div class="signature-section">
+            <div>
+                <p class="signature-text">প্রদানকারীর স্বাক্ষর</p>
+                <p class="signature-name">[প্রদানকারীর নাম]</p>
+            </div>
+            <div>
+                <p class="signature-text">আদায়কারীর স্বাক্ষর</p>
+                <p class="signature-name">[আদায়কারীর নাম]</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="print-button-container">
+        <button class="print-button" onclick="generateReceiptPdf()">Print Receipt</button>
+    </div>
+
+    <script>
+        function generateReceiptPdf() {
+            const element = document.getElementById('receiptDiv');
+            const { jsPDF } = window.jspdf;
+
+            // A4 dimensions in mm: 210 mm (width) x 297 mm (height)
+            const a4Width_mm = 210;
+            const a4Height_mm = 297;
+
+            // Target PDF width: A4 width / 2
+            const targetPdfWidth_mm = a4Width_mm / 2;
+
+            html2canvas(element, { scale: 2 }).then(canvas => { // Scale for better quality
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth_px = canvas.width;
+                const imgHeight_px = canvas.height;
+
+                // Calculate the ratio to maintain aspect ratio while fitting to target PDF width
+                const ratio = targetPdfWidth_mm / imgWidth_px;
+                const imgHeight_mm = imgHeight_px * ratio;
+
+                const pdf = new jsPDF('p', 'mm', [targetPdfWidth_mm, a4Height_mm]); // Define custom page size
+                let position = 0;
+                let heightLeft = imgHeight_mm;
+
+                // Add image to PDF
+                pdf.addImage(imgData, 'PNG', 0, position, targetPdfWidth_mm, imgHeight_mm);
+                heightLeft -= a4Height_mm; // Subtract one page height
+
+                // If content is longer than one page, add new pages
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight_mm; // Move up for the next section
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, targetPdfWidth_mm, imgHeight_mm);
+                    heightLeft -= a4Height_mm;
+                }
+
+                pdf.save('রশিদ.pdf');
+            });
+        }
+    </script>
+</body>
+</html>
